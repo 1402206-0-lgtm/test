@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏 - VS Code版</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-snake"></i> 贪吃蛇游戏</h1>
+            <p class="subtitle">经典的贪吃蛇，在VS Code中畅玩！</p>
+        </header>
+
+        <main class="game-area">
+            <div class="left-panel">
+                <div class="game-board">
+                    <canvas id="gameCanvas" width="600" height="600"></canvas>
+                </div>
+                
+                <div class="controls">
+                    <button id="startBtn" class="btn btn-primary">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                    <button id="pauseBtn" class="btn btn-secondary">
+                        <i class="fas fa-pause"></i> 暂停 (P)
+                    </button>
+                    <button id="restartBtn" class="btn btn-warning">
+                        <i class="fas fa-redo"></i> 重新开始
+                    </button>
+                    <button id="themeBtn" class="btn btn-theme">
+                        <i class="fas fa-palette"></i> 切换主题
+                    </button>
+                </div>
+                
+                <div class="mobile-controls">
+                    <div class="mobile-row">
+                        <button class="mobile-btn" data-direction="up">↑</button>
+                    </div>
+                    <div class="mobile-row">
+                        <button class="mobile-btn" data-direction="left">←</button>
+                        <div class="placeholder"></div>
+                        <button class="mobile-btn" data-direction="right">→</button>
+                    </div>
+                    <div class="mobile-row">
+                        <button class="mobile-btn" data-direction="down">↓</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="info-card">
+                    <h3><i class="fas fa-chart-line"></i> 游戏状态</h3>
+                    <div class="info-item">
+                        <span class="label">分数</span>
+                        <span id="score" class="value">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">长度</span>
+                        <span id="length" class="value">3</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">速度</span>
+                        <span id="speed" class="value">正常</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">食物</span>
+                        <span id="foodCount" class="value">0</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fas fa-crown"></i> 最高纪录</h3>
+                    <div class="info-item">
+                        <span class="label">最高分</span>
+                        <span id="highScore" class="value">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">最长蛇</span>
+                        <span id="maxLength" class="value">3</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">游戏次数</span>
+                        <span id="gamesPlayed" class="value">0</span>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fas fa-keyboard"></i> 控制说明</h3>
+                    <div class="controls-list">
+                        <div class="control-item">
+                            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+                            <span>或方向键移动</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>空格</kbd>
+                            <span>加速移动</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>P</kbd>
+                            <span>暂停/继续</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>R</kbd>
+                            <span>重新开始</span>
+                        </div>
+                        <div class="control-item">
+                            <kbd>+</kbd><kbd>-</kbd>
+                            <span>调整速度</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fas fa-gamepad"></i> 游戏规则</h3>
+                    <ul class="rules-list">
+                        <li>控制蛇吃到食物（红色方块）</li>
+                        <li>每吃一个食物：<span class="points">+10分，长度+1</span></li>
+                        <li>碰到墙壁或自己身体：游戏结束</li>
+                        <li>食物类型：
+                            <ul class="food-types">
+                                <li><span class="food normal"></span> 普通：+10分</li>
+                                <li><span class="food bonus"></span> 奖励：+30分</li>
+                                <li><span class="food speed"></span> 加速：速度提升</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3><i class="fas fa-sliders-h"></i> 游戏设置</h3>
+                    <div class="settings">
+                        <div class="setting-item">
+                            <label for="gridSize">网格大小：</label>
+                            <select id="gridSize">
+                                <option value="20">小 (20×20)</option>
+                                <option value="25" selected>中 (25×25)</option>
+                                <option value="30">大 (30×30)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="gameSpeed">游戏速度：</label>
+                            <input type="range" id="gameSpeed" min="1" max="10" value="5">
+                            <span id="speedValue">5</span>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="wallThrough" checked> 穿墙模式
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="showGrid" checked> 显示网格
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="game-over" id="gameOver">
+            <div class="game-over-content">
+                <h2><i class="fas fa-skull-crossbones"></i> 游戏结束!</h2>
+                <div class="stats">
+                    <p>最终分数: <span id="finalScore">0</span></p>
+                    <p>蛇的长度: <span id="finalLength">3</span></p>
+                    <p>吃到食物: <span id="finalFood">0</span></p>
+                    <p>游戏时间: <span id="finalTime">0s</span></p>
+                </div>
+                <div class="buttons">
+                    <button id="playAgainBtn" class="btn btn-success">
+                        <i class="fas fa-play-circle"></i> 再玩一次
+                    </button>
+                    <button id="shareBtn" class="btn btn-share">
+                        <i class="fas fa-share"></i> 分享成绩
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>在Visual Studio Code中创建 | 贪吃蛇游戏 © 2023</p>
+            <p class="hint">提示: 按F11可以全屏游戏，获得更好体验！</p>
+        </footer>
+    </div>
+
+    <script src="snake.js"></script>
+</body>
+</html>

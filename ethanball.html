@@ -1,0 +1,24 @@
+import random
+
+def guess_the_number():
+    number = random.randint(1, 100)
+    attempts = 0
+    print("歡迎來玩「猜數字」遊戲！")
+    print("我想了一個 1 到 100 之間的數字，你來猜猜看吧！")
+
+    while True:
+        try:
+            guess = int(input("請輸入你的猜測："))
+            attempts += 1
+            if guess < number:
+                print("太小了！再試一次。")
+            elif guess > number:
+                print("太大了！再試一次。")
+            else:
+                print(f"恭喜你！答案就是 {number}，你總共猜了 {attempts} 次！")
+                break
+        except ValueError:
+            print("請輸入一個有效的數字！")
+
+if __name__ == "__main__":
+    guess_the_number()

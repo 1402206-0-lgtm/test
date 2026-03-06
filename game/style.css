@@ -1,0 +1,318 @@
+/* 重置和基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 头部样式 */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header h1 {
+    font-size: 2.8rem;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 10px;
+}
+
+.header .subtitle {
+    font-size: 1.2rem;
+    color: #a0a0c0;
+}
+
+/* 游戏区域布局 */
+.game-area {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.left-panel {
+    flex: 1;
+    min-width: 300px;
+}
+
+.right-panel {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 游戏画布 */
+.game-board {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 2px solid #3742fa;
+}
+
+#gameCanvas {
+    display: block;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+/* 控制按钮 */
+.controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 140px;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #3742fa, #5352ed);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #2ed573, #1dd1a1);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(45deg, #ff9f43, #ffaf40);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #10ac84, #00d2d3);
+    color: white;
+}
+
+/* 信息卡片 */
+.info-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.info-card h3 {
+    color: #70a1ff;
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.label {
+    font-size: 1.1rem;
+    color: #a0a0c0;
+}
+
+.value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fffa65;
+    text-shadow: 0 0 10px rgba(255, 250, 101, 0.3);
+}
+
+/* 下一个方块预览 */
+.next-piece {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+#nextCanvas {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+/* 控制说明 */
+.controls-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.control-item kbd {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 1.1rem;
+    min-width: 60px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.control-item span {
+    color: #dfe4ea;
+}
+
+/* 游戏规则 */
+.rules-list {
+    list-style: none;
+    padding-left: 10px;
+}
+
+.rules-list li {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+    color: #dfe4ea;
+}
+
+.rules-list li:before {
+    content: "•";
+    color: #4ecdc4;
+    position: absolute;
+    left: 0;
+    font-size: 1.5rem;
+}
+
+.rules-list .points {
+    color: #fffa65;
+    font-weight: bold;
+}
+
+/* 游戏结束弹窗 */
+.game-over {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.game-over-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 3px solid #ff6b6b;
+    max-width: 500px;
+    width: 90%;
+}
+
+.game-over-content h2 {
+    color: #ff6b6b;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.game-over-content p {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #fffa65;
+}
+
+/* 页脚 */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: #a0a0c0;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 30px;
+}
+
+.footer .hint {
+    color: #4ecdc4;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-area {
+        flex-direction: column;
+    }
+    
+    .right-panel {
+        width: 100%;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .btn {
+        min-width: 120px;
+        padding: 10px 20px;
+    }
+}
