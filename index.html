@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Henry's Game Center</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Google Stitch 生成的 Header -->
+    <header class="site-header">
+        <h1>Henry's Game Center</h1>
+        <p class="slogan">🎮 重溫經典 · 玩出新意</p>
+    </header>
+
+    <!-- 遊戲卡片區 - 由 Roo Code 動態載入 -->
+    <main id="game-container">
+        <div class="games-grid">
+            <!-- 貪吃蛇卡片 -->
+            <div class="game-card" data-game="snake">
+                <div class="game-icon">🐍</div>
+                <h2>貪吃蛇·橙球掉頭版</h2>
+                <p>WASD/方向鍵 · 橙色+30分 · 可掉頭</p>
+                <button class="play-btn" onclick="loadGame('snake')">開始遊戲</button>
+            </div>
+
+            <!-- 俄羅斯方塊卡片 -->
+            <div class="game-card" data-game="tetris">
+                <div class="game-icon">🧩</div>
+                <h2>俄羅斯方塊·經典重生</h2>
+                <p>方向鍵控制 · 流暢下落 · 分數挑戰</p>
+                <button class="play-btn" onclick="loadGame('tetris')">開始遊戲</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 遊戲嵌入區域 - Roo Code 會將遊戲載入這裡 -->
+    <div id="game-frame" style="display: none;">
+        <button class="back-btn" onclick="backToLobby()">← 返回大廳</button>
+        <iframe id="game-iframe" src="" frameborder="0"></iframe>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 Henry's Game Center · Made with ❤️ by Henry</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src=".roo/loader.js"></script> <!-- Roo Code 載入器 -->
+</body>
+</html>
