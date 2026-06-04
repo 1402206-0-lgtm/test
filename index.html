@@ -3,49 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Henry's Game Center</title>
-    <link rel="stylesheet" href="style.css">
+    <title>班級吐槽牆</title>
+    <style>
+        :root {
+            --bg: #fdf6ee;
+            --card-bg: #ffffff;
+            --card-done-bg: #f2ede5;
+            --primary: #6b4e3d;
+            --accent: #c49a6c;
+            --accent-hover: #b07d4b;
+            --border: #e0d3c1;
+            --text: #3e3328;
+            --text-light: #8b7a67;
+            --radius: 1rem;
+            --shadow: 0 2px 12px rgba(80, 50, 20, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 640px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.04em;
+        }
+        .header .badge {
+            background: #e8d9c5;
+            color: #5a4030;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            letter-spacing: 0.05em;
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .form-row label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        .form-row textarea,
+        .form-row select {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1.5px solid var(--border);
+            border-radius: 0.7rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: #fffdf9;
+            color: var(--text);
+            resize: vertical;
+            transition: border 0.2s;
+        }
+        .form-row textarea:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(196, 154, 108, 0.15);
+        }
+        .form-row textarea {
+            min-height: 80px;
+        }
+        .btn-submit {
+            align-self: flex-end;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-submit:hover {
+            background: var(--accent-hover);
+        }
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .filter-btn:hover {
+            border-color: var(--accent);
+            color: var(--primary);
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .empty-state {
+            text-align: center;
+            color: var(--text-light);
+            padding: 3rem 1rem;
+            font-size: 0.95rem;
+        }
+
+        .record-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.15rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: opacity 0.25s, background 0.25s;
+        }
+        .record-card.done {
+            background: var(--card-done-bg);
+            opacity: 0.7;
+        }
+        .record-card.done .record-content {
+            text-decoration: line-through;
+        }
+        .record-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+        .record-category {
+            background: #f0e4d5;
+            color: #5e4532;
+            padding: 0.15rem 0.7rem;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.03em;
+        }
+        .record-status {
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.15rem 0.7rem;
+            border-radius: 100px;
+        }
+        .record-status.active {
+            background: #d4e7d0;
+            color: #2d5a27;
+        }
+        .record-status.done {
+            background: #e5ded5;
+            color: #6b5e4f;
+        }
+        .record-content {
+            font-size: 1rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: var(--text);
+        }
+        .record-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-sm {
+            border: 1.5px solid var(--border);
+            background: #fffdf9;
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            color: var(--text);
+        }
+        .btn-sm:hover {
+            border-color: var(--accent);
+            background: #fefaf3;
+        }
+        .btn-like {
+            border-color: #e8c8a0;
+            background: #fff7ed;
+            color: #8b5e34;
+        }
+        .btn-like:hover {
+            background: #fdebd5;
+            border-color: #d4a574;
+        }
+        .btn-toggle {
+            border-color: #c7b9a8;
+        }
+        .record-likes {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #8b5e34;
+            min-width: 2.5rem;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            .form-card {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Google Stitch 生成的 Header -->
-    <header class="site-header">
-        <h1>Henry's Game Center</h1>
-        <p class="slogan">🎮 重溫經典 · 玩出新意</p>
-    </header>
-
-    <!-- 遊戲卡片區 - 由 Roo Code 動態載入 -->
-    <main id="game-container">
-        <div class="games-grid">
-            <!-- 貪吃蛇卡片 -->
-            <div class="game-card" data-game="snake">
-                <div class="game-icon">🐍</div>
-                <h2>貪吃蛇·橙球掉頭版</h2>
-                <p>WASD/方向鍵 · 橙色+30分 · 可掉頭</p>
-                <button class="play-btn" onclick="loadGame('snake')">開始遊戲</button>
-            </div>
-
-            <!-- 俄羅斯方塊卡片 -->
-            <div class="game-card" data-game="tetris">
-                <div class="game-icon">🧩</div>
-                <h2>俄羅斯方塊·經典重生</h2>
-                <p>方向鍵控制 · 流暢下落 · 分數挑戰</p>
-                <button class="play-btn" onclick="loadGame('tetris')">開始遊戲</button>
-            </div>
+    <div class="app-container">
+        <!-- header -->
+        <div class="header">
+            <h1>📢 班級吐槽牆</h1>
+            <span class="badge">匿名發洩</span>
         </div>
-    </main>
 
-    <!-- 遊戲嵌入區域 - Roo Code 會將遊戲載入這裡 -->
-    <div id="game-frame" style="display: none;">
-        <button class="back-btn" onclick="backToLobby()">← 返回大廳</button>
-        <iframe id="game-iframe" src="" frameborder="0"></iframe>
+        <!-- form -->
+        <div class="form-card" id="formCard">
+            <div class="form-row">
+                <label for="contentInput">🗯️ 吐槽內容（必填）</label>
+                <textarea id="contentInput" placeholder="寫下你的真心話…" maxlength="300"></textarea>
+            </div>
+            <div class="form-row">
+                <label for="categorySelect">📂 分類（必填）</label>
+                <select id="categorySelect">
+                    <option value="學校">學校</option>
+                    <option value="功課">功課</option>
+                    <option value="生活">生活</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            <button class="btn-submit" id="submitBtn">➕ 匿名送出</button>
+        </div>
+
+        <!-- filter: status -->
+        <div class="filter-bar" id="statusFilterBar">
+            <button class="filter-btn active" data-status="全部">全部</button>
+            <button class="filter-btn" data-status="active">🔥 active</button>
+            <button class="filter-btn" data-status="done">✅ done</button>
+        </div>
+
+        <!-- filter: category -->
+        <div class="filter-bar" id="categoryFilterBar">
+            <button class="filter-btn active" data-category="全部">全部類別</button>
+            <button class="filter-btn" data-category="學校">學校</button>
+            <button class="filter-btn" data-category="功課">功課</button>
+            <button class="filter-btn" data-category="生活">生活</button>
+            <button class="filter-btn" data-category="其他">其他</button>
+        </div>
+
+        <!-- record list -->
+        <div class="record-list" id="recordList"></div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2024 Henry's Game Center · Made with ❤️ by Henry</p>
-    </footer>
+    <script>
+        (() => {
+            // ==================== 常數 ====================
+            const STORAGE_KEY = 'records';
 
-    <script src="script.js"></script>
-    <script src=".roo/loader.js"></script> <!-- Roo Code 載入器 -->
+            // ==================== DOM refs ====================
+            const contentInput = document.getElementById('contentInput');
+            const categorySelect = document.getElementById('categorySelect');
+            const submitBtn = document.getElementById('submitBtn');
+            const recordListEl = document.getElementById('recordList');
+            const statusFilterBar = document.getElementById('statusFilterBar');
+            const categoryFilterBar = document.getElementById('categoryFilterBar');
+
+            // ==================== 狀態 ====================
+            let statusFilter = '全部';
+            let categoryFilter = '全部';
+
+            // ==================== Core Functions ====================
+
+            /**
+             * loadData()
+             * 從 localStorage 讀取 records array；沒有資料就回傳 []
+             */
+            function loadData() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return [];
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    console.warn('loadData 失敗', e);
+                    return [];
+                }
+            }
+
+            /**
+             * persistData(records)
+             * 內部輔助：將 records array 寫入 localStorage
+             */
+            function persistData(records) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+            }
+
+            /**
+             * createRecord(formData)
+             * 根據表單內容建立一筆新 record object（不儲存）
+             */
+            function createRecord(formData) {
+                return {
+                    id: generateId(),
+                    createdAt: new Date().toISOString(),
+                    status: 'active',
+                    content: formData.content.trim(),
+                    category: formData.category,
+                    likes: 0,
+                };
+            }
+
+            /**
+             * saveData(record)
+             * 只負責新增一筆 record 到 records array，然後寫入 localStorage
+             */
+            function saveData(record) {
+                const records = loadData();
+                records.unshift(record);
+                persistData(records);
+            }
+
+            /**
+             * updateRecord(id, changes)
+             * 只負責更新一筆 record，然後寫入 localStorage
+             */
+            function updateRecord(id, changes) {
+                const records = loadData();
+                const idx = records.findIndex(r => r.id === id);
+                if (idx === -1) return false;
+                records[idx] = { ...records[idx], ...changes };
+                persistData(records);
+                return true;
+            }
+
+            /** 產生唯一 id */
+            function generateId() {
+                return Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 8);
+            }
+
+            // ==================== 過濾邏輯 ====================
+            function getFilteredRecords() {
+                const all = loadData();
+                return all.filter(r => {
+                    if (statusFilter !== '全部' && r.status !== statusFilter) return false;
+                    if (categoryFilter !== '全部' && r.category !== categoryFilter) return false;
+                    return true;
+                });
+            }
+
+            // ==================== 渲染 ====================
+
+            /**
+             * renderList(recordsToShow)
+             * 把 records 顯示到頁面
+             */
+            function renderList(recordsToShow) {
+                const records = recordsToShow !== undefined ? recordsToShow : getFilteredRecords();
+
+                if (!records.length) {
+                    recordListEl.innerHTML = '<div class="empty-state">✨ 還沒有吐槽，快來搶頭香 ✨</div>';
+                    return;
+                }
+
+                const sorted = [...records].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                recordListEl.innerHTML = sorted.map(r => {
+                    const isDone = r.status === 'done';
+                    const cardClass = isDone ? 'record-card done' : 'record-card';
+                    const statusClass = isDone ? 'record-status done' : 'record-status active';
+                    const statusText = isDone ? '已完成' : 'active';
+                    const timeStr = new Date(r.createdAt).toLocaleString('zh-TW', {
+                        year: 'numeric', month: '2-digit', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit',
+                    });
+
+                    return `
+                        <div class="${cardClass}" data-id="${escapeAttr(r.id)}">
+                            <div class="record-meta">
+                                <span class="record-category">📌 ${escapeHtml(r.category)}</span>
+                                <span>${escapeHtml(timeStr)}</span>
+                                <span class="${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="record-content">${escapeHtml(r.content)}</div>
+                            <div class="record-actions">
+                                <button class="btn-sm btn-like" data-action="like" data-id="${escapeAttr(r.id)}">
+                                    👍 +1
+                                </button>
+                                <span class="record-likes">❤️ ${r.likes ?? 0}</span>
+                                <button class="btn-sm btn-toggle" data-action="toggle" data-id="${escapeAttr(r.id)}">
+                                    ${isDone ? '🔄 恢復 active' : '✔️ 標記完成'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // ==================== HTML 轉義 ====================
+            function escapeHtml(str) {
+                const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+                return String(str).replace(/[&<>"']/g, c => map[c]);
+            }
+            function escapeAttr(str) {
+                return String(str).replace(/"/g, '&quot;');
+            }
+
+            // ==================== 事件處理 ====================
+            function handleSubmit() {
+                const content = contentInput.value.trim();
+                if (!content) {
+                    alert('請填寫吐槽內容！');
+                    contentInput.focus();
+                    return;
+                }
+                const category = categorySelect.value;
+                const record = createRecord({ content, category });
+                saveData(record);
+
+                contentInput.value = '';
+                categorySelect.value = '學校';
+
+                renderList();
+            }
+
+            function handleRecordClick(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const action = btn.dataset.action;
+                const id = btn.dataset.id;
+                if (!id || !action) return;
+
+                if (action === 'like') {
+                    const records = loadData();
+                    const target = records.find(r => r.id === id);
+                    if (target) {
+                        updateRecord(id, { likes: (target.likes ?? 0) + 1 });
+                        renderList();
+                    }
+                } else if (action === 'toggle') {
+                    const records = loadData();
+                    const target = records.find(r => r.id === id);
+                    if (target) {
+                        const newStatus = target.status === 'active' ? 'done' : 'active';
+                        updateRecord(id, { status: newStatus });
+                        renderList();
+                    }
+                }
+            }
+
+            function handleStatusFilter(e) {
+                const btn = e.target.closest('button');
+                if (!btn || !btn.dataset.status) return;
+                statusFilter = btn.dataset.status;
+                updateFilterUI();
+                renderList();
+            }
+
+            function handleCategoryFilter(e) {
+                const btn = e.target.closest('button');
+                if (!btn || !btn.dataset.category) return;
+                categoryFilter = btn.dataset.category;
+                updateFilterUI();
+                renderList();
+            }
+
+            function updateFilterUI() {
+                statusFilterBar.querySelectorAll('button').forEach(b => {
+                    b.classList.toggle('active', b.dataset.status === statusFilter);
+                });
+                categoryFilterBar.querySelectorAll('button').forEach(b => {
+                    b.classList.toggle('active', b.dataset.category === categoryFilter);
+                });
+            }
+
+            // ==================== 初始化 ====================
+            function init() {
+                submitBtn.addEventListener('click', handleSubmit);
+                contentInput.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSubmit();
+                    }
+                });
+                recordListEl.addEventListener('click', handleRecordClick);
+                statusFilterBar.addEventListener('click', handleStatusFilter);
+                categoryFilterBar.addEventListener('click', handleCategoryFilter);
+
+                updateFilterUI();
+                renderList();
+            }
+
+            init();
+        })();
+    </script>
 </body>
 </html>
